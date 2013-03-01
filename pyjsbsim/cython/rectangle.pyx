@@ -1,3 +1,6 @@
+# distutils: language = c++
+# distutils: sources = cpp_rect.cpp
+
 cdef extern from "<vector>" namespace "std":
     cdef cppclass vector[T]:
         cppclass iterator:
