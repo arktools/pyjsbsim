@@ -6,7 +6,7 @@ class Test(unittest.TestCase):
         pass
 
     def test_load(self):
-        from pyjsbsim.cython.rectangle import Rectangle
+        from pyjsbsim.rectangle import Rectangle
         r = Rectangle(1, 2, 3, 4)
         print r
         print "Original area:", r.getArea()
