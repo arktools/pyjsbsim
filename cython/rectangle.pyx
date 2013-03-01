@@ -1,5 +1,6 @@
 # distutils: language = c++
-# distutils: sources = cpp_rect.cpp
+# distutils: include_dirs = cpp
+# distutils: libraries = plibjs
 
 cdef extern from "<vector>" namespace "std":
     cdef cppclass vector[T]:
