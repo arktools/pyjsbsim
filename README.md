@@ -1,4 +1,4 @@
-# pyjsbsim
+# PyJSBSim
 * A python interface to JSBSim
 
 ## Dependencies
