@@ -2,7 +2,6 @@ from setuptools import find_packages
 from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
-from Cython.Build import cythonize
 
 version = '0.0.1'
 
@@ -32,8 +31,16 @@ setup(name='PyJSBSim',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
       install_requires=['cython'],
-      ext_modules= cythonize('cython/*.pyx'),
-      #cmdclass = {'build_ext': build_ext},
+      ext_modules=[
+        Extension("pyjsbsim.rectangle",
+                  sources=[
+                      "cython/rectangle.pyx",
+                      "cpp/cpp_rect.cpp"],
+                  libraries=['plibjs'],
+                  include_dirs=["pyjsbsim/cython","cpp"],
+                  language="c++"),
+      ],
+      cmdclass = {'build_ext': build_ext},
       test_suite="test",
       #package_dir={'pyjsbsim': 'pyjsbsim'},
       #package_data={'pyjsbsim': ['templates/*']},
