@@ -32,9 +32,9 @@ setup(name='PyJSBSim',
       include_package_data=True,
       install_requires=['cython'],
       ext_modules=[
-        Extension("pyjsbsim",
+        Extension("pyjsbsim.cython.rectangle",
                   sources=[
-                      "pyjsbsim/cython/rectangle.pyx",
+                      "cython/rectangle.pyx",
                       "cpp/cpp_rect.cpp"],
                   libraries=['plibjs'],
                   include_dirs=["pyjsbsim/cython","cpp"],

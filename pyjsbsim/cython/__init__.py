@@ -1,1 +1,1 @@
-from rectangle import Rectangle
+import rectangle

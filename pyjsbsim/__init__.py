@@ -1,1 +1,1 @@
-from cython import Rectangle
+from cython import *
