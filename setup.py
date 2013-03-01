@@ -41,6 +41,7 @@ setup(name='PyJSBSim',
                   language="c++"),
       ],
       cmdclass = {'build_ext': build_ext},
+      test_suite="test",
       #package_dir={'pyjsbsim': 'pyjsbsim'},
       #package_data={'pyjsbsim': ['templates/*']},
       #entry_points={
