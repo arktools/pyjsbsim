@@ -34,10 +34,10 @@ setup(name='PyJSBSim',
       ext_modules=[
         Extension("rectangle",
                   sources=[
-                      "pyjsbsim/rectangle.pyx",
-                      "pyjsbsim/cpp_rect.cpp"],
+                      "pyjsbsim/cython/rectangle.pyx",
+                      "pyjsbsim/cpp/cpp_rect.cpp"],
                   libraries=['plibjs'],
-                  include_dirs=["."],
+                  include_dirs=["pyjsbsim/cython","pyjsbsim/cpp"],
                   language="c++"),
       ],
       cmdclass = {'build_ext': build_ext},
