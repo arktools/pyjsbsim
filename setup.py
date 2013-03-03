@@ -35,7 +35,6 @@ setup(name='PyJSBSim',
         Extension('pyjsbsim.jsbsim',
                   sources=[
                       'cython/jsbsim.pyx'
-                      'cython/jsbsim.pxd'
                   ],
                   libraries=['JSBSim'],
                   include_dirs=['/usr/local/include/JSBSim','cpp'],
