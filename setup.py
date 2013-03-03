@@ -7,10 +7,10 @@ version = '0.0.2'
 
 setup(name='PyJSBSim',
       version=version,
-      description="A python interface for JSBSim using Cython.",
-      long_description="""\
+      description='A python interface for JSBSim using Cython.',
+      long_description='''\
       Interfaces to JSBSim using Cython.
-      """,
+      ''',
       classifiers=[
           'Development Status :: 4 - Beta',
           'Environment :: Console',
@@ -32,14 +32,17 @@ setup(name='PyJSBSim',
       include_package_data=True,
       install_requires=['cython'],
       ext_modules=[
-        Extension("pyjsbsim.jsbsim",
-                  sources=["cython/jsbsim.pyx"],
+        Extension('pyjsbsim.jsbsim',
+                  sources=[
+                      'cython/jsbsim.pyx'
+                      'cython/jsbsim.pxd'
+                  ],
                   libraries=['JSBSim'],
                   include_dirs=['/usr/local/include/JSBSim','cpp'],
-                  language="c++"),
+                  language='c++'),
       ],
       cmdclass = {'build_ext': build_ext},
-      test_suite="test",
+      test_suite='test',
       #package_dir={'pyjsbsim': 'pyjsbsim'},
       #package_data={'pyjsbsim': ['templates/*']},
       #entry_points={
