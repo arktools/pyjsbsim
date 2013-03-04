@@ -70,6 +70,7 @@ cdef class FGFDMExec:
 
     def __cinit__(self):
         self.thisptr = new c_FGFDMExec(0,0)
+        self.set_debug_level(0)
 
     def __dealloc__(self):
         del self.thisptr

@@ -3,7 +3,7 @@ from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
 
-version = '0.0.2'
+version = '0.2.7'
 
 setup(name='PyJSBSim',
       version=version,
@@ -30,7 +30,7 @@ setup(name='PyJSBSim',
       license='GPLv3',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
-      install_requires=['cython'],
+      install_requires=['cython >= 0.18'],
       ext_modules=[
         Extension('pyjsbsim.jsbsim',
                   sources=[
