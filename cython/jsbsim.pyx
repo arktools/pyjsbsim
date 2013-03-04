@@ -1,5 +1,6 @@
 from libcpp cimport bool
 from libcpp.string cimport string
+from libcpp.vector cimport vector
 
 cdef extern from "JSBSim/initialization/FGInitialCondition.h":
     cdef cppclass c_FGInitialCondition "JSBSim::FGInitialCondition":
@@ -376,7 +377,16 @@ cdef class FGFDMExec:
         @return the carriage-return-delimited string containing all matching strings
             in the catalog.
         """
-        return self.thisptr.QueryPropertyCatalog(check)
+        return (self.thisptr.QueryPropertyCatalog(check)).rstrip().split('\n')
+
+    def get_property_catalog(self, check):
+        """
+        Retrieves the property catalog as a dictionary.
+        """
+        catalog = {}
+        for item in self.query_property_catalog(check):
+            catalog[item] = self.get_property_value(item)
+        return catalog
 
     def print_property_catalog(self):
         """

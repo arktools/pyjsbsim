@@ -3,6 +3,7 @@ from pyjsbsim.jsbsim import FGFDMExec
 from utils import BinarySolver
 import time
 import numpy as np
+import pickle
 
 class FDM737(FGFDMExec):
 
@@ -14,8 +15,8 @@ class FDM737(FGFDMExec):
         self.set_engine_path("engine")
         self.set_systems_path("systems")
         self.load_model("737")
-
-        #print 'catalog\n', fdm.query_property_catalog("/")
+   
+        #print self.query_property_catalog("/")
 
         self.set_property_value("ic/vt-fps", 750.0)
         self.set_property_value("ic/h-agl-ft", 30000.0)
@@ -38,7 +39,8 @@ class MaxFlightPathAngleProblem(object):
 
     def setup(self, param):
         self.fdm.set_property_value("ic/gamma-deg", param)
-        #print 'gamma: ', self.fdm.get_property_value("ic/gamma-deg")
+        # why is the negative sign there?
+        print 'gamma: ', -self.fdm.get_property_value("ic/gamma-deg")
 
     def solve(self):
         result = {}
@@ -49,41 +51,50 @@ class MaxFlightPathAngleProblem(object):
             result['status'] = 'exception'
         return result
 
-def generate_bada_data(fdm, vels, alts):
+class BadaData(object):
 
-    gamma_table = []
-    solver = BinarySolver(verbose=False)
+    def __init__(self, vels, alts):
+        self.vels = vels
+        self.alts = alts
+        self.catalog =[[0]*len(vels)]*len(alts)
 
-    for i_vel in range(len(vels)):
-        fdm.set_property_value("ic/vt-fps", vels[i_vel])
-        gamma_table.append([])
+    def __repr__(self):
+        return "BADA Data:\n{}".format(str(self.catalog))
 
-        for i_alt in range(len(alts)):
-            fdm.set_property_value("ic/h-agl-ft", alts[i_alt])
+    @classmethod
+    def from_fdm(cls, fdm, vels, alts):
 
-            print "vt-fps: {}\nh-agl-ft: {}\n".format(
-                fdm.get_property_value("ic/vt-fps"),
-                fdm.get_property_value("ic/h-agl-ft"))
+        data = cls(vels, alts);
+        solver = BinarySolver(verbose=False)
 
-            start = time.time()
+        for i_vel in range(len(vels)):
+            fdm.set_property_value("ic/vt-fps", vels[i_vel])
 
-            solver.solve(MaxFlightPathAngleProblem(fdm),
-                x_guess=0, x_min=-50, x_max=50, tol=0.1, speed=0.5)
+            for i_alt in range(len(alts)):
+                fdm.set_property_value("ic/h-agl-ft", alts[i_alt])
 
-            gamma_table[i_vel].append(fdm.get_property_value("ic/gamma-deg"))
+                print "vt-fps: {}\nh-agl-ft: {}\n".format(
+                    fdm.get_property_value("ic/vt-fps"),
+                    fdm.get_property_value("ic/h-agl-ft"))
 
-            print "elapsed time: {} sec\n".format(time.time()-start)
-            print "gamma-deg: {}\n".format(
-                fdm.get_property_value("ic/gamma-deg"))
+                start = time.time()
 
-    data = {}
-    data['gamma_table'] = gamma_table
-    return data
+                solver.solve(MaxFlightPathAngleProblem(fdm),
+                    x_guess=0, x_min=-50, x_max=50, tol=0.1, speed=0.5)
 
+                data.catalog[i_vel][i_alt] = fdm.get_property_catalog("/")
 
-bada_data = generate_bada_data(
+                print "elapsed time: {} sec\n".format(time.time()-start)
+                print "gamma-deg: {}\n".format(fdm.get_property_value("ic/gamma-deg"))
+        return data
+
+bada_data_737 = BadaData.from_fdm(
     fdm=FDM737(),
-    vels=np.linspace(700,800,2),
-    alts=np.linspace(10000,30000,2))
+    vels=np.linspace(700,800,1),
+    alts=np.linspace(10000,30000,1))
 
-print bada_data['gamma_table']
+pickle.dump(bada_data_737, open("save.bada_data_737","wb"))
+
+bada_data_737 = pickle.load(open("save.bada_data_737","rb"))
+
+print bada_data_737
