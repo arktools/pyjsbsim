@@ -23,11 +23,12 @@ cdef extern from "JSBSim/FGFDMExec.h" namespace "JSBSim":
         string GetAircraftPath()
         string GetSystemsPath()
         string GetRootDir()
+        string GetFullAircraftPath()
         double GetPropertyValue(string property)
         void SetPropertyValue(string property, double value)
         string GetModelName()
         bool SetOutputDirectives(string fname)
-        void ForceOutput(int idx=0)
+        #void ForceOutput(int idx=0)
         void SetLoggingRate(double rate)
         bool SetOutputFileName(string fname)
         string GetOutputFileName()
@@ -116,7 +117,7 @@ cdef class FGFDMExec:
         """
         return self.thisptr.LoadModel(model, add_model_to_path)
 
-    def load_model(self, model, aircraft_path,
+    def load_model_with_paths(self, model, aircraft_path,
                    engine_path, systems_path, add_model_to_path = True):
         """
         Loads an aircraft model.  The paths to the aircraft and engine
@@ -130,9 +131,10 @@ cdef class FGFDMExec:
             AircraftPath, defaults to true
         @return true if successful
         """
-        return self.thisptr.LoadModel(model, add_model_to_path)
+        return self.thisptr.LoadModel(model, aircraft_path,
+            engine_path, systems_path, add_model_to_path)
 
-    def load_script(script, delta_t, initfile):
+    def load_script(self, script, delta_t, initfile):
         """
         Loads a script
         @param Script The full path name and file name for the script to be loaded.
@@ -145,7 +147,7 @@ cdef class FGFDMExec:
             is not given in either place, an error will result.
         @return true if successfully loads; false otherwise. */
         """
-        return self.thisptr.LoadModel(script, delta_t, initfile)
+        return self.thisptr.LoadScript(script, delta_t, initfile)
 
     def set_engine_path(self, path):
         """
@@ -251,11 +253,11 @@ cdef class FGFDMExec:
         """
         return self.thisptr.SetOutputDirectives(fname)
 
-    def force_output(self, index):
-        """
-        Forces the specified output object to print its items once
-        """
-        self.thisptr.ForceOutput(index)
+    #def force_output(self, index):
+        #"""
+        #Forces the specified output object to print its items once
+        #"""
+        #self.thisptr.ForceOutput(index)
 
     def set_logging_rate(self, rate):
         """
@@ -271,7 +273,7 @@ cdef class FGFDMExec:
         """
         return self.thisptr.GetOutputFileName()
 
-    def do_trim(self):
+    def do_trim(self, mode):
         """
         Executes trimming in the selected mode.
         @param mode Specifies how to trim:
@@ -283,21 +285,28 @@ cdef class FGFDMExec:
             - tTurn
             - tNone
         """
-        self.thisptr.DoTrim()
+        self.thisptr.DoTrim(mode)
 
-    def do_simplex_trim(self):
+    def do_simplex_trim(self, mode):
         """
-        Executes linearization with state-space output
-            * You must trim first to get an accurate state-space model
+        Executes simplex trimming in the selected mode.
+        @param mode Specifies how to trim:
+            - tLongitudinal=0
+            - tFull
+            - tGround
+            - tPullup
+            - tCustom
+            - tTurn
+            - tNone
         """
-        self.thisptr.DoSimplexTrim()
+        self.thisptr.DoSimplexTrim(mode)
 
     def do_linearization(self):
         """
         Executes linearization with state-space output
             * You must trim first to get an accurate state-space model
         """
-        self.thisptr.DoLinearization()
+        self.thisptr.DoLinearization(0)
 
     def do_disable_output(self):
         """
@@ -317,7 +326,7 @@ cdef class FGFDMExec:
         """
         self.thisptr.Hold()
 
-    def enable_increment_then_hold(time_steps):
+    def enable_increment_then_hold(self, time_steps):
         """
         Turn on hold after increment
         """
@@ -418,10 +427,10 @@ cdef class FGFDMExec:
         """
         return self.thisptr.Setsim_time(time)
 
-    def set_dt(self, delta_t):
+    def set_dt(self, dt):
         """
         Sets the integration time step for the simulation executive.
-        @param delta_t the time step in seconds.
+        @param dt the time step in seconds.
         """
         self.thisptr.Setdt(dt)
 

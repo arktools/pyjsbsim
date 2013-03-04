@@ -6,6 +6,7 @@ class Test(unittest.TestCase):
         pass
 
     def test_FGFDMExec(self):
+
         from pyjsbsim.jsbsim import FGFDMExec
         fdm = FGFDMExec()
 
@@ -25,9 +26,11 @@ class Test(unittest.TestCase):
         fdm.set_systems_path(systems_path)
         assert (root_dir+systems_path == fdm.get_systems_path())
 
-        print fdm
+        model = "f16"
+        fdm.load_model(model)
+        assert (model == fdm.get_model_name())
 
-        fdm.run()
+        fdm.do_simplex_trim(0)
 
 if __name__ == '__main__':
     unittest.main()
