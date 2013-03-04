@@ -1,6 +1,10 @@
 from libcpp cimport bool
 from libcpp.string cimport string
 
+cdef extern from "JSBSim/initialization/FGInitialCondition.h":
+    cdef cppclass c_FGInitialCondition "JSBSim::FGInitialCondition":
+        c_FGInitialCondition()
+
 cdef extern from "JSBSim/FGFDMExec.h" namespace "JSBSim":
     cdef cppclass c_FGFDMExec "JSBSim::FGFDMExec":
         c_FGFDMExec(int root, int fdmctr)
@@ -33,7 +37,7 @@ cdef extern from "JSBSim/FGFDMExec.h" namespace "JSBSim":
         bool SetOutputFileName(string fname)
         string GetOutputFileName()
         void DoTrim(int mode)
-        void DoSimplexTrim(int mode)
+        void DoSimplexTrim(int mode) except +
         void DoLinearization(int mode)
         void DisableOutput()
         void EnableOutput()
@@ -134,7 +138,7 @@ cdef class FGFDMExec:
         return self.thisptr.LoadModel(model, aircraft_path,
             engine_path, systems_path, add_model_to_path)
 
-    def load_script(self, script, delta_t, initfile):
+    def load_script(self, script, delta_t=0.0, initfile=""):
         """
         Loads a script
         @param Script The full path name and file name for the script to be loaded.

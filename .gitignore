@@ -4,3 +4,4 @@ build/*
 *.dll
 *.egg-info/
 *dist/
+*.log

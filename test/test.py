@@ -1,3 +1,4 @@
+import devpath
 import unittest
 
 class Test(unittest.TestCase):
@@ -5,11 +6,11 @@ class Test(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_FGFDMExec(self):
+    def test_accessors(self):
 
         from pyjsbsim.jsbsim import FGFDMExec
         fdm = FGFDMExec()
-
+        
         root_dir = "/usr/local/share/JSBSim/"
         fdm.set_root_dir(root_dir)
         assert (root_dir == fdm.get_root_dir())
@@ -29,8 +30,6 @@ class Test(unittest.TestCase):
         model = "f16"
         fdm.load_model(model)
         assert (model == fdm.get_model_name())
-
-        fdm.do_simplex_trim(0)
 
 if __name__ == '__main__':
     unittest.main()
