@@ -37,7 +37,7 @@ class MaxFlightPathAngleProblem(object):
         self.fdm = fdm
 
     def setup(self, param):
-        self.fdm.set_property_value("ic/gamma-deg", -param)
+        self.fdm.set_property_value("ic/gamma-deg", param)
         #print 'gamma: ', self.fdm.get_property_value("ic/gamma-deg")
 
     def solve(self):
@@ -69,7 +69,6 @@ def generate_bada_data(fdm, vels, alts):
 
             solver.solve(MaxFlightPathAngleProblem(fdm),
                 x_guess=0, x_min=-50, x_max=50, tol=0.1, speed=0.5)
-
 
             gamma_table[i_vel].append(fdm.get_property_value("ic/gamma-deg"))
 
