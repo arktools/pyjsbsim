@@ -3,7 +3,7 @@ from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
 
-version = '0.2.7'
+version = '0.2.8'
 
 setup(name='PyJSBSim',
       version=version,
