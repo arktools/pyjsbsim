@@ -8,7 +8,7 @@ class Test(unittest.TestCase):
 
     def test_accessors(self):
 
-        from pyjsbsim.jsbsim import FGFDMExec
+        from pyjsbsim import FGFDMExec
         fdm = FGFDMExec()
         
         root_dir = "/usr/local/share/JSBSim/"

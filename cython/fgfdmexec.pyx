@@ -2,10 +2,6 @@ from libcpp cimport bool
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
-cdef extern from "JSBSim/initialization/FGInitialCondition.h":
-    cdef cppclass c_FGInitialCondition "JSBSim::FGInitialCondition":
-        c_FGInitialCondition()
-
 cdef extern from "JSBSim/FGFDMExec.h" namespace "JSBSim":
     cdef cppclass c_FGFDMExec "JSBSim::FGFDMExec":
         c_FGFDMExec(int root, int fdmctr)

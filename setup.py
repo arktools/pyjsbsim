@@ -32,12 +32,12 @@ setup(name='PyJSBSim',
       include_package_data=True,
       install_requires=['cython >= 0.18'],
       ext_modules=[
-        Extension('pyjsbsim.jsbsim',
+        Extension('pyjsbsim.jsbsim_cython',
                   sources=[
-                      'cython/jsbsim.pyx'
+                      'cython/fgfdmexec.pyx'
                   ],
                   libraries=['JSBSim'],
-                  include_dirs=['/usr/local/include/JSBSim','cpp'],
+                  include_dirs=['/usr/local/include/JSBSim'],
                   language='c++'),
       ],
       cmdclass = {'build_ext': build_ext},
