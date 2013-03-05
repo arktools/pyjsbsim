@@ -1,4 +1,5 @@
 import time
+import pickle
 from utils import BinarySolver
 
 class TrimPropertyProblem(object):
@@ -35,7 +36,7 @@ class BadaData(object):
         return "BADA Data:\n"
 
     @classmethod
-    def from_fdm(cls, fdm, flight_levels):
+    def from_fdm(cls, fdm, flight_levels, file_name):
 
         data = cls(flight_levels);
         solver = BinarySolver(verbose=False)
@@ -84,5 +85,7 @@ class BadaData(object):
             print "\nmax descent trim finished:\n" \
                 "elapsed time\t: {} sec\ngamma\t: {}\n".format(
                 time.time()-start, fdm.get_property_value("ic/gamma-deg"))
+
+            pickle.dump(data, open(file_name,"wb"))
 
         return data

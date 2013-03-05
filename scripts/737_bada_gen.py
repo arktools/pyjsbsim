@@ -57,7 +57,8 @@ bada_data_737 = BadaData.from_fdm(
     flight_levels = np.array([
         0, 5, 10, 15, 20, 30, 40, 60, 80, 100,
         120, 140, 160, 180, 200, 220, 240, 260,
-        280, 290, 310, 330, 350, 370]))
+        280, 290, 310, 330, 350, 370]),
+    file_name="save.bada_data_737")
 pickle.dump(bada_data_737, open("save.bada_data_737","wb"))
 bada_data_737 = pickle.load(open("save.bada_data_737","rb"))
 
