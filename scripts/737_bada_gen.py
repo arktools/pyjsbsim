@@ -28,14 +28,11 @@ class FDM737(FGFDMExec):
 
         self.set_property_value("ic/h-agl-ft", 30000.0)
         self.set_property_value("ic/gamma-deg", 0.0)
-        self.set_property_value("ic/lat-gc-deg", 47.0)
-        self.set_property_value("ic/lon-gc-deg", 122.0)
-        self.set_property_value("ic/phi-deg", 0.0)
-        self.set_property_value("ic/theta-deg", 0.0)
-        self.set_property_value("ic/psi-deg", 0.0)
-
+        
     def setup_bada_trim(self, mode):
         self.set_property_value("ic/vc-kts", 250)
+        self.set_property_value("ic/lat-gc-deg", 0.0)
+        self.set_property_value("ic/lon-gc-deg", 0.0)
         self.set_property_value("ic/lat-gc-deg", 47.0)
         self.set_property_value("ic/lon-gc-deg", 122.0)
         self.set_property_value("ic/phi-deg", 0.0)
@@ -57,11 +54,11 @@ class FDM737(FGFDMExec):
 
 bada_data_737 = BadaData.from_fdm(
     fdm=FDM737(),
-    vels=np.linspace(700,800,2),
-    alts=np.linspace(10000,30000,2))
-
+    flight_levels = np.array([
+        0, 5, 10, 15, 20, 30, 40, 60, 80, 100,
+        120, 140, 160, 180, 200, 220, 240, 260,
+        280, 290, 310, 330, 350, 370]))
 pickle.dump(bada_data_737, open("save.bada_data_737","wb"))
-
 bada_data_737 = pickle.load(open("save.bada_data_737","rb"))
 
 print bada_data_737
