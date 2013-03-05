@@ -183,6 +183,11 @@ cdef class FGFDMExec:
         """
         self.thisptr.SetRootDir(path)
 
+        # this is a hack to fix a bug in JSBSim
+        self.set_engine_path(self.get_engine_path())
+        self.set_aircraft_path(self.get_aircraft_path())
+        self.set_systems_path(self.get_systems_path())
+
     def get_engine_path(self):
         """
         Retrieves the engine path

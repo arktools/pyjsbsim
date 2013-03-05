@@ -52,14 +52,14 @@ class FDM737(FGFDMExec):
         for item in ["ic/h-agl-ft","ic/vc-kts","ic/vt-kts"]:
             print "{}\t: {}".format(item,self.get_property_value(item))
 
+file_name = "save.bada_data_737-" + time.strftime("%m_%d_%y__%H_%M")
 bada_data_737 = BadaData.from_fdm(
     fdm=FDM737(),
-    flight_levels = np.array([
-        0, 5, 10, 15, 20, 30, 40, 60, 80, 100,
-        120, 140, 160, 180, 200, 220, 240, 260,
-        280, 290, 310, 330, 350, 370]),
-    file_name="save.bada_data_737")
-pickle.dump(bada_data_737, open("save.bada_data_737","wb"))
-bada_data_737 = pickle.load(open("save.bada_data_737","rb"))
+    flight_levels = np.array([0, 5, 10]),
+        #0, 5, 10, 15, 20, 30, 40, 60, 80, 100,
+        #120, 140, 160, 180, 200, 220, 240, 260,
+        #280, 290, 310, 330, 350, 370]),
+    file_name=file_name)
+bada_data_737_loaded = pickle.load(open(file_name,"rb"))
 
-print bada_data_737
+print bada_data_737_loaded

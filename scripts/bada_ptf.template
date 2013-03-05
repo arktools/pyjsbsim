@@ -1,0 +1,17 @@
+                           BADA PERFORMANCE FILE              {date}
+ 
+AC/Type: {name} 
+                              SOURCE OPF FILE:               {date}
+                              SOURCE APF FILE:               {date}
+ 
+ Speeds:   CAS(LO/HI)  Mach   Mass Levels [kg]         Temperature:   ISA 
+ climb   - {climb_cas_low:3d}/{climb_cas_high:3d} {climb_mach:8.2f}   low     - {low_mass:<10d} 
+ cruise  - {cruise_cas_low:3d}/{cruise_cas_high:3d} {cruise_mach:8.2f}   nominal - {nom_mass:<10d}    Max Alt. [ft]: {max_alt:<10d}
+ descent - {descent_cas_low:3d}/{descent_cas_high:3d} {descent_mach:8.2f}   high    - {high_mass:<10d}
+======================================================================================= 
+ FL |         CRUISE            |              CLIMB             |       DESCENT        
+    |  TAS          fuel        |  TAS       ROCD         fuel   |  TAS  ROCD    fuel   
+    | [kts]       [kg/min]      | [kts]      [fpm]      [kg/min] | [kts] [fpm] [kg/min] 
+    |          lo   nom    hi   |         lo  nom   hi    nom    |        nom    nom    
+======================================================================================= 
+{table}=======================================================================================
