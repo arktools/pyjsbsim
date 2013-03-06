@@ -1,4 +1,5 @@
-import bada
+import devpath
+from pyjsbsim.bada import BadaData
 import pickle
 import argparse
 

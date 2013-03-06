@@ -1,3 +1,4 @@
-recursive-include scripts *.py *.txt
+recursive-include examples *.py *.txt
+recursive-include scripts *.py
 include README.md
 include license.txt

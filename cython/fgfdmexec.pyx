@@ -2,6 +2,8 @@ from libcpp cimport bool
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
+import os, platform
+
 cdef extern from "JSBSim/models/FGPropulsion.h" namespace "JSBSim":
     cdef cppclass c_FGPropulsion "JSBSim::FGPropulsion":
         c_FGPropulsion(c_FGFDMExec* fdm)
@@ -72,9 +74,56 @@ cdef class FGFDMExec:
 
     cdef c_FGFDMExec *thisptr      # hold a C++ instance which we're wrapping
 
-    def __cinit__(self):
+    def __cinit__(self, root_dir=None,debug_level=0):
+        # this hides startup message
+        os.environ["JSBSIM_DEBUG"]=str(debug_level)
         self.thisptr = new c_FGFDMExec(0,0)
-        self.set_debug_level(0)
+        self.set_debug_level(debug_level)
+        self.set_root_dir(self.find_root_path())
+
+    def simulate(self, record_properties=[], t_final=1, dt=1.0/120):
+        y = {}
+        t = []
+        for prop in record_properties:
+            y[prop] = []
+        self.set_dt(1.0/120)
+        end_time = 10
+        while self.get_sim_time() < end_time:
+            self.run()
+            print 't:', self.get_sim_time()
+            t.append(self.get_sim_time())
+            for prop in record_properties:
+                y[prop].append(self.get_property_value(prop))
+        return (t,y)
+
+    def find_root_path(self):
+
+        root_dir = None
+        search_paths = []
+
+        if os.environ.get("JSBSIM") is not None:
+            search_paths.append(os.environ.get("JSBSIM"))
+
+        if platform.system() == "Linux":
+            search_paths.append("/usr/local/share/JSBSim/")
+            search_paths.append("/usr/share/JSBSim/")
+        elif platform.system() == "Windows":
+            #TODO add some windows search paths
+            pass
+        elif platform.system() == "Darwin":
+            search_paths.append("/opt/local/share/JSBSim/")
+
+        for path in search_paths:
+            if os.path.isdir(path):
+                root_dir = path
+                break
+
+        if root_dir is None:
+            raise IOError("Could not find JSBSim root, try "
+                          "defining JSBSIM environment variable")
+        return root_dir
+
+
 
     def __dealloc__(self):
         del self.thisptr

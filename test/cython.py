@@ -1,17 +1,20 @@
 import devpath
 import unittest
+import os
+from pyjsbsim import FGFDMExec
 
-class Test(unittest.TestCase):
-
-    def setUp(self):
+class TestFGFDMExec(unittest.TestCase):
+    
+    def setup(self):
         pass
 
-    def test_accessors(self):
-
-        from pyjsbsim import FGFDMExec
+    def test_construct(self):
         fdm = FGFDMExec()
-        
-        root_dir = "/usr/local/share/JSBSim/"
+
+    def test_accessors(self):
+        fdm = FGFDMExec()
+
+        root_dir = "test_root"
         fdm.set_root_dir(root_dir)
         assert (root_dir == fdm.get_root_dir())
 
@@ -27,6 +30,8 @@ class Test(unittest.TestCase):
         fdm.set_systems_path(systems_path)
         assert (root_dir+systems_path == fdm.get_systems_path())
 
+    def test_load_model(self):
+        fdm = FGFDMExec()
         model = "f16"
         fdm.load_model(model)
         assert (model == fdm.get_model_name())

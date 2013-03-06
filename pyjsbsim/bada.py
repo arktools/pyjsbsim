@@ -2,6 +2,7 @@ import time
 from math import pi, sin
 import pickle
 import numpy as np
+import os
 from utils import BinarySolver
 
 class TrimPropertyProblem(object):
@@ -75,13 +76,15 @@ class BadaData(object):
     def __repr__(self):
 
         # load bada ptf template
-        ptf_template = open("bada_ptf.template","rb").read()
+        ptf_template=open(os.path.abspath(
+            os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                         "files", "bada_ptf.template")), "rb").read()
 
         # roaw format string
         ptf_row_format = "{flight_level:3} |"\
             "{cruise_tas:5d} {cruise_fuelrate_low:6.1f} {cruise_fuelrate_nom:6.1f} {cruise_fuelrate_high:6.1f} |"\
-            "{climb_tas:5d} {climb_roc_low:5d} {climb_roc_nom:4d} {climb_roc_high:4d} {climb_fuelrate_nom:8.1f}  |"\
-            "{descent_tas:5d} {descent_rod:6d} {descent_fuelrate:7.1f}\n"\
+            "{climb_tas:5d} {climb_roc_low:5d} {climb_roc_nom:5d} {climb_roc_high:5d} {climb_fuelrate_nom:7.1f} |"\
+            "{descent_tas:5d} {descent_rod:5d} {descent_fuelrate:7.1f}\n"\
             "    |                           |                                |                     \n"
 
         modes = ["low", "nom", "high"]
@@ -128,32 +131,32 @@ class BadaData(object):
 
             # write a row in the table
             table += ptf_row_format.format(
-                    flight_level=int(fl),
+                    flight_level=int(round(fl)),
 
                     # cruise
-                    cruise_tas=int(self.cruise[fl_str]["nom"]["ic/vt-kts"]),
+                    cruise_tas=int(round(self.cruise[fl_str]["nom"]["ic/vt-kts"])),
                     cruise_fuelrate_low=cruise_fuelrate_low,
                     cruise_fuelrate_nom=cruise_fuelrate_nom,
                     cruise_fuelrate_high=cruise_fuelrate_high,
 
                     # climb
-                    climb_tas=int(self.climb[fl_str]["nom"]["ic/vt-kts"]),
-                    climb_roc_low= int(
+                    climb_tas=int(round(self.climb[fl_str]["nom"]["ic/vt-kts"])),
+                    climb_roc_low= int(round(
                         sin(pi/180*self.climb[fl_str]["low"]["ic/gamma-deg"])*
-                        self.climb[fl_str]["low"]["ic/vt-fps"]*fps2fpm),
-                    climb_roc_nom= int(
+                        self.climb[fl_str]["low"]["ic/vt-fps"]*fps2fpm)),
+                    climb_roc_nom= int(round(
                         sin(pi/180*self.climb[fl_str]["nom"]["ic/gamma-deg"])*
-                        self.climb[fl_str]["nom"]["ic/vt-fps"]*fps2fpm),
-                    climb_roc_high= int(
+                        self.climb[fl_str]["nom"]["ic/vt-fps"]*fps2fpm)),
+                    climb_roc_high= int(round(
                         sin(pi/180*self.climb[fl_str]["high"]["ic/gamma-deg"])*
-                        self.climb[fl_str]["high"]["ic/vt-fps"]*fps2fpm),
+                        self.climb[fl_str]["high"]["ic/vt-fps"]*fps2fpm)),
                     climb_fuelrate_nom=climb_fuelrate_nom,
 
                     # descent
-                    descent_tas=int(self.descent[fl_str]["ic/vt-kts"]),
-                    descent_rod=-int(
+                    descent_tas=int(round(self.descent[fl_str]["ic/vt-kts"])),
+                    descent_rod=-int(round(
                         sin(pi/180*self.descent[fl_str]["ic/gamma-deg"])*
-                        self.descent[fl_str]["ic/vt-fps"]*fps2fpm),
+                        self.descent[fl_str]["ic/vt-fps"]*fps2fpm)),
                     descent_fuelrate=descent_fuelrate,
                 )
 
@@ -169,27 +172,27 @@ class BadaData(object):
             name=self.file_name,
 
             # climb
-            climb_cas_low=int(self.climb[fl_key]["low"]["ic/vc-kts"]),
-            climb_cas_high=int(self.climb[fl_key]["high"]["ic/vc-kts"]),
+            climb_cas_low=int(round(self.climb[fl_key]["low"]["ic/vc-kts"])),
+            climb_cas_high=int(round(self.climb[fl_key]["high"]["ic/vc-kts"])),
             climb_mach=self.climb[fl_key]["nom"]["ic/mach"],
 
             # cruise
-            cruise_cas_low=int(self.cruise[fl_key]["low"]["ic/vc-kts"]),
-            cruise_cas_high=int(self.cruise[fl_key]["high"]["ic/vc-kts"]),
+            cruise_cas_low=int(round(self.cruise[fl_key]["low"]["ic/vc-kts"])),
+            cruise_cas_high=int(round(self.cruise[fl_key]["high"]["ic/vc-kts"])),
             cruise_mach=self.cruise[fl_key]["nom"]["ic/mach"],
 
             # descent
-            descent_cas_low=int(self.descent[fl_key]["ic/vc-kts"]),
-            descent_cas_high=int(self.descent[fl_key]["ic/vc-kts"]),
+            descent_cas_low=int(round(self.descent[fl_key]["ic/vc-kts"])),
+            descent_cas_high=int(round(self.descent[fl_key]["ic/vc-kts"])),
             descent_mach=self.descent[fl_key]["ic/mach"],
 
             # mass
-            low_mass=int(self.cruise[fl_key]["low"]["inertia/weight-lbs"]*lbs2kg),
-            nom_mass=int(self.cruise[fl_key]["nom"]["inertia/weight-lbs"]*lbs2kg),
-            high_mass=int(self.cruise[fl_key]["high"]["inertia/weight-lbs"]*lbs2kg),
+            low_mass=int(round(self.cruise[fl_key]["low"]["inertia/weight-lbs"]*lbs2kg)),
+            nom_mass=int(round(self.cruise[fl_key]["nom"]["inertia/weight-lbs"]*lbs2kg)),
+            high_mass=int(round(self.cruise[fl_key]["high"]["inertia/weight-lbs"]*lbs2kg)),
 
             # max alt
-            max_alt=int(max_alt),
+            max_alt=int(round(max_alt)),
         )
 
     @classmethod
@@ -199,9 +202,9 @@ class BadaData(object):
         solver = BinarySolver(verbose=verbose)
         data.num_engines = fdm.propulsion_get_num_engines()
 
-        for fl in flight_levels:
+        try:
 
-            try:
+            for fl in flight_levels:
 
                 # flight level as string
                 fl_str = str(fl)
@@ -225,7 +228,8 @@ class BadaData(object):
                     start = time.time()
                     fdm.setup_bada_trim(mode)
                     gammaProb.setup(0)
-                    gammaProb.solve()
+                    if not gammaProb.solve():
+                        raise RuntimeError("Cruise trim failed!")
                     cruise_catalog[mode] = fdm.get_property_catalog("/")
                     print "\ncruise {} trim finished:\n" \
                         "elapsed time\t: {} sec\n".format(mode,
@@ -261,9 +265,8 @@ class BadaData(object):
                 data.descent[fl_str] = descent_catalog
                 data.save()
 
-            except RuntimeError as e:
-                print e
-                continue
+        except RuntimeError as e:
+            print e
 
         data.save()
         return data

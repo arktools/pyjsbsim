@@ -3,40 +3,15 @@ from pyjsbsim import FGFDMExec
 import time
 import numpy as np
 import pickle
-from bada import BadaData
+from pyjsbsim.bada import BadaData
 
 class FDM737(FGFDMExec):
 
     def __init__(self):
         super(FDM737, self).__init__()
-
-        self.set_root_dir("/usr/local/share/JSBSim/")
-        self.set_aircraft_path("aircraft")
-        self.set_engine_path("engine")
-        self.set_systems_path("systems")
         self.load_model("737")
-
-        # solver properties
-        self.set_property_value("trim/solver/iterMax", 300)
-        self.set_property_value("trim/solver/showConvergence", False)
-        self.set_property_value("trim/solver/showSimplex", False)
-        self.set_property_value("trim/solver/pause", False)
-   
-        #for item in self.query_property_catalog("/"):
-            #print item
-
-        self.set_property_value("ic/h-agl-ft", 30000.0)
-        self.set_property_value("ic/gamma-deg", 0.0)
         
     def setup_bada_trim(self, mode):
-
-        self.set_property_value("trim/solver/aileronGuess",0)
-        self.set_property_value("trim/solver/elevatorGuess",0)
-        self.set_property_value("trim/solver/rudderGuess",0)
-        self.set_property_value("trim/solver/throttleGuess",0.5)
-        self.set_property_value("trim/solver/alphaGuess",0)
-        self.set_property_value("trim/solver/betaGuess",0)
-
         self.set_property_value("ic/vc-kts", 250)
         self.set_property_value("ic/lat-gc-deg", 0.0)
         self.set_property_value("ic/lon-gc-deg", 0.0)
