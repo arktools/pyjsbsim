@@ -2,6 +2,12 @@ from libcpp cimport bool
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
+cdef extern from "JSBSim/models/FGPropulsion.h" namespace "JSBSim":
+    cdef cppclass c_FGPropulsion "JSBSim::FGPropulsion":
+        c_FGPropulsion(c_FGFDMExec* fdm)
+        void InitRunning(int n)
+        int GetNumEngines()
+
 cdef extern from "JSBSim/FGFDMExec.h" namespace "JSBSim":
     cdef cppclass c_FGFDMExec "JSBSim::FGFDMExec":
         c_FGFDMExec(int root, int fdmctr)
@@ -33,7 +39,7 @@ cdef extern from "JSBSim/FGFDMExec.h" namespace "JSBSim":
         void SetLoggingRate(double rate)
         bool SetOutputFileName(string fname)
         string GetOutputFileName()
-        void DoTrim(int mode)
+        void DoTrim(int mode) except +
         void DoSimplexTrim(int mode) except +
         void DoLinearization(int mode)
         void DisableOutput()
@@ -59,6 +65,7 @@ cdef extern from "JSBSim/FGFDMExec.h" namespace "JSBSim":
         void Setdt(double delta_t)
         double IncrTime() 
         int GetDebugLevel()   
+        c_FGPropulsion* GetPropulsion()
 
 # this is the python wrapper class
 cdef class FGFDMExec:
@@ -463,3 +470,9 @@ cdef class FGFDMExec:
         Retrieves the current debug level setting.
         """
         return self.thisptr.GetDebugLevel()
+
+    def propulsion_init_running(self, n):
+        self.thisptr.GetPropulsion().InitRunning(n)
+
+    def propulsion_get_num_engines(self):
+        return self.thisptr.GetPropulsion().GetNumEngines()

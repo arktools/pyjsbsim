@@ -21,15 +21,22 @@ class FDM737(FGFDMExec):
         self.set_property_value("trim/solver/showConvergence", False)
         self.set_property_value("trim/solver/showSimplex", False)
         self.set_property_value("trim/solver/pause", False)
-
    
         #for item in self.query_property_catalog("/"):
-        #    print item
+            #print item
 
         self.set_property_value("ic/h-agl-ft", 30000.0)
         self.set_property_value("ic/gamma-deg", 0.0)
         
     def setup_bada_trim(self, mode):
+
+        self.set_property_value("trim/solver/aileronGuess",0)
+        self.set_property_value("trim/solver/elevatorGuess",0)
+        self.set_property_value("trim/solver/rudderGuess",0)
+        self.set_property_value("trim/solver/throttleGuess",0.5)
+        self.set_property_value("trim/solver/alphaGuess",0)
+        self.set_property_value("trim/solver/betaGuess",0)
+
         self.set_property_value("ic/vc-kts", 250)
         self.set_property_value("ic/lat-gc-deg", 0.0)
         self.set_property_value("ic/lon-gc-deg", 0.0)
@@ -55,11 +62,12 @@ class FDM737(FGFDMExec):
 file_name = "save.bada_data_737-" + time.strftime("%m_%d_%y__%H_%M")
 bada_data_737 = BadaData.from_fdm(
     fdm=FDM737(),
-    flight_levels = np.array([0, 5, 10]),
-        #0, 5, 10, 15, 20, 30, 40, 60, 80, 100,
-        #120, 140, 160, 180, 200, 220, 240, 260,
-        #280, 290, 310, 330, 350, 370]),
-    file_name=file_name)
+    flight_levels = np.array([
+        0, 5, 10, 15, 20, 30, 40, 60, 80, 100,
+        120, 140, 160, 180, 200, 220, 240, 260,
+        280, 290, 310, 330, 350, 370]),
+    file_name=file_name,
+    verbose=False)
 bada_data_737_loaded = pickle.load(open(file_name,"rb"))
 
 print bada_data_737_loaded

@@ -12,53 +12,18 @@ class BinarySolver(object):
              x_min=-1e10,
              x_max=1e10,
              x_guess=0,
-             loop_max=200,
-             start_search_depth=100):
+             loop_max=200):
 
         if prob_type not in ["min", "max"]:
             raise IOError("unknown problem type")
 
-        # find a true value to start with that 
-        # doesn't throw an exception, search in
-        # the direction of xmax first
-        loop_count = 0
-        x_start_next = x_guess
-        search_direction = x_max
-
-        # do linear search for start value
-        while True:
-
-            # set new param
-            x_start = x_start_next
-
-            # status
-            if self.verbose:
-                print 'i:', loop_count, \
-                 'start:', x_start
-
-            # setup
-            problem.setup(param=x_start)
-
-            # if solution found
-            if problem.solve():
-                break
-            else:
-                if x_start > x_max:
-                    search_direction = x_min
-                    x_start_next = x_guess
-                    x_start_next = -1
-                elif x_start < x_min:
-                    break
-                else:
-                    # step in search direction
-                    x_start_next = x_start + (search_direction-x_guess)/start_search_depth
-
-            # break if max loop count exceeded
-            loop_count += 1
-            if loop_count > loop_max:
-                raise RuntimeError('loop count exceeded')
+        # make sure initial guess works
+        problem.setup(param=x_guess)
+        if not problem.solve():
+            raise RuntimeError("initial start point x = {}, isn't valid".format(x_guess))
 
         # find the boundary
+        x_start_next = x_guess
         if prob_type == "max":
             left = x_start_next
             right = x_max
