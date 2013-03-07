@@ -1,8 +1,14 @@
 # PyJSBSim
-* A python interface to JSBSim
 
-## Dependencies
+A python interface to JSBSim
 
-* JSBSim
+## Installation
+
+You need to install the following dependencies:
+
+* Cython
+* NumPy
 
 ## Example Usage
+
+See examples/plot.py for a basic usage example.
