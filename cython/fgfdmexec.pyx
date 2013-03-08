@@ -79,7 +79,10 @@ cdef class FGFDMExec:
         os.environ["JSBSIM_DEBUG"]=str(debug_level)
         self.thisptr = new c_FGFDMExec(0,0)
         self.set_debug_level(debug_level)
-        self.set_root_dir(self.find_root_path())
+        if root_dir is None:
+            self.set_root_dir(self.find_root_dir())
+        else:
+            self.set_root_dir(root_dir)
 
     def simulate(self, record_properties=[], t_final=1, dt=1.0/120):
         y = {}
@@ -96,14 +99,9 @@ cdef class FGFDMExec:
                 y[prop].append(self.get_property_value(prop))
         return (t,y)
 
-    def find_root_path(self):
-
+    def find_root_dir(self, search_paths=[]):
         root_dir = None
-        search_paths = []
-
-        if os.environ.get("JSBSIM") is not None:
-            search_paths.append(os.environ.get("JSBSIM"))
-
+        search_paths.append(os.environ.get("JSBSIM"))
         if platform.system() == "Linux":
             search_paths.append("/usr/local/share/JSBSim/")
             search_paths.append("/usr/share/JSBSim/")
@@ -114,16 +112,13 @@ cdef class FGFDMExec:
             search_paths.append("/opt/local/share/JSBSim/")
 
         for path in search_paths:
-            if os.path.isdir(path):
+            if path is not  None and os.path.isdir(path):
                 root_dir = path
                 break
-
         if root_dir is None:
             raise IOError("Could not find JSBSim root, try "
                           "defining JSBSIM environment variable")
         return root_dir
-
-
 
     def __dealloc__(self):
         del self.thisptr
