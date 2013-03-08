@@ -30,7 +30,7 @@ setup(name='PyJSBSim',
       license='GPLv3',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
-      install_requires=['cython >= 0.18', 'numpy'],
+      install_requires=['Cython >= 0.18', 'numpy'],
       ext_modules=[
         Extension('pyjsbsim.jsbsim_cython',
                   sources=[
