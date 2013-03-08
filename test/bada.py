@@ -18,7 +18,7 @@ class TestBADA(unittest.TestCase):
         class FDMF16(FGFDMExec):
 
             def __init__(self):
-                super(FDMF16, self).__init__()
+                self.find_root_dir()
                 self.load_model("f16")
 
             def setup_bada_trim(self, mode):

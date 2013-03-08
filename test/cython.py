@@ -32,6 +32,8 @@ class TestFGFDMExec(unittest.TestCase):
 
     def test_load_model(self):
         fdm = FGFDMExec()
+        fdm.find_root_dir()
+        fdm.set_aircraft_path("aircraft")
         model = "f16"
         fdm.load_model(model)
         assert (model == fdm.get_model_name())

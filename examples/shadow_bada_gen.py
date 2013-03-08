@@ -9,8 +9,8 @@ from pyjsbsim.bada import BadaData
 class Shadow(FGFDMExec):
 
     def __init__(self):
-        super(Shadow,self).__init__()
-        self.set_root_dir(os.environ.get("UASNAS"))
+        self.find_root_dir([os.environ.get("UASNAS")])
+        self.set_debug_level(0)
         self.load_model("shadow")
         
     def setup_bada_trim(self, mode):

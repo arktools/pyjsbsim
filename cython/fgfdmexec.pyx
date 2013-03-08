@@ -74,7 +74,7 @@ cdef class FGFDMExec:
 
     cdef c_FGFDMExec *thisptr      # hold a C++ instance which we're wrapping
 
-    def __cinit__(self, *args):
+    def __cinit__(self, **kwargs):
         # this hides startup message
         os.environ["JSBSIM_DEBUG"]=str(0)
         self.thisptr = new c_FGFDMExec(0,0)
@@ -94,7 +94,7 @@ cdef class FGFDMExec:
                 y[prop].append(self.get_property_value(prop))
         return (t,y)
 
-    def find_root_dir(self, search_paths=[]):
+    def find_root_dir(self, search_paths=[], verbose=False):
         root_dir = None
         search_paths.append(os.environ.get("JSBSIM"))
         if platform.system() == "Linux":
@@ -106,15 +106,18 @@ cdef class FGFDMExec:
         elif platform.system() == "Darwin":
             search_paths.append("/opt/local/share/JSBSim/")
 
+        if verbose:
+            print "search_paths"
         for path in search_paths:
-            print 'searching for JSBSim in path: ', path
+            if verbose:
+                print '\t', path
             if path is not  None and os.path.isdir(path):
                 root_dir = path
                 break
         if root_dir is None:
             raise IOError("Could not find JSBSim root, try "
                           "defining JSBSIM environment variable")
-        return root_dir
+        self.set_root_dir(root_dir)
 
     def __dealloc__(self):
         del self.thisptr
@@ -226,7 +229,7 @@ cdef class FGFDMExec:
     def set_root_dir(self, path):
         """
         Sets the root directory where JSBSim starts looking for its system directories.
-        @param rootDir the string containing the root directory.
+        @param path the string containing the root directory.
         """
         self.thisptr.SetRootDir(path)
 
