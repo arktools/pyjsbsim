@@ -105,6 +105,7 @@ cdef class FGFDMExec:
             pass
         elif platform.system() == "Darwin":
             search_paths.append("/opt/local/share/JSBSim/")
+            search_paths.append("/usr/local/share/JSBSim/")
 
         if verbose:
             print "search_paths"
