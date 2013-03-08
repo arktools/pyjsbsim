@@ -9,12 +9,11 @@ from pyjsbsim.bada import BadaData
 class FDM(FGFDMExec):
 
     def __init__(self):
-        print 'uasnas', os.environ["UASNAS"]
-        super(FDM, self).__init__(root_dir=os.environ["UASNAS"])
+        super(FDM, self).__init__(root_dir=os.environ.get("UASNAS"), debug_level=4)
         self.load_model("shadow")
         
     def setup_bada_trim(self, mode):
-        self.set_property_value("ic/vc-kts", 50)
+        self.set_property_value("ic/vc-kts", 35)
         self.set_property_value("ic/lat-gc-deg", 0.0)
         self.set_property_value("ic/lon-gc-deg", 0.0)
         self.set_property_value("ic/lat-gc-deg", 47.0)

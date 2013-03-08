@@ -84,16 +84,16 @@ cdef class FGFDMExec:
         else:
             self.set_root_dir(root_dir)
 
-    def simulate(self, record_properties=[], t_final=1, dt=1.0/120):
+    def simulate(self, record_properties=[], t_final=1, dt=1.0/120, verbose=False):
         y = {}
         t = []
         for prop in record_properties:
             y[prop] = []
-        self.set_dt(1.0/120)
-        end_time = 10
-        while self.get_sim_time() < end_time:
+        self.set_dt(dt)
+        while self.get_sim_time() < t_final:
             self.run()
-            print 't:', self.get_sim_time()
+            if verbose:
+                print 't:', self.get_sim_time()
             t.append(self.get_sim_time())
             for prop in record_properties:
                 y[prop].append(self.get_property_value(prop))
