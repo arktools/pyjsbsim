@@ -6,10 +6,11 @@ import pickle
 import os
 from pyjsbsim.bada import BadaData
 
-class FDM(FGFDMExec):
+class Shadow(FGFDMExec):
 
     def __init__(self):
-        super(FDM, self).__init__(root_dir=os.environ.get("UASNAS"), debug_level=4)
+        super(Shadow,self).__init__()
+        self.set_root_dir(os.environ.get("UASNAS"))
         self.load_model("shadow")
         
     def setup_bada_trim(self, mode):
@@ -33,17 +34,17 @@ class FDM(FGFDMExec):
         else:
             raise IOError("unknown mode")
         for item in ["ic/h-agl-ft","ic/vc-kts","ic/vt-kts"]:
-            print "{}\t: {}".format(item,self.get_property_value(item))
+            print "{}\t: {}".format(item, self.get_property_value(item))
 
-file_name = "save.bada_data_737-" + time.strftime("%m_%d_%y__%H_%M")
-bada_data_737 = BadaData.from_fdm(
-    fdm=FDM(),
+file_name = "save.bada_data_shadow-" + time.strftime("%m_%d_%y__%H_%M")
+bada_data = BadaData.from_fdm(
+    fdm=Shadow(),
     flight_levels = np.array([
         0, 5, 10, 15, 20, 30, 40, 60, 80, 100,
         120, 140, 160, 180, 200, 220, 240, 260,
         280, 290, 310, 330, 350, 370]),
     file_name=file_name,
     verbose=False)
-bada_data_737_loaded = pickle.load(open(file_name,"rb"))
+bada_data_loaded = pickle.load(open(file_name,"rb"))
 
-print bada_data_737_loaded
+print bada_data_loaded

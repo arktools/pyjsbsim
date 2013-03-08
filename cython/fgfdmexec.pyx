@@ -74,15 +74,10 @@ cdef class FGFDMExec:
 
     cdef c_FGFDMExec *thisptr      # hold a C++ instance which we're wrapping
 
-    def __cinit__(self, root_dir=None,debug_level=0):
+    def __cinit__(self, *args):
         # this hides startup message
-        os.environ["JSBSIM_DEBUG"]=str(debug_level)
+        os.environ["JSBSIM_DEBUG"]=str(0)
         self.thisptr = new c_FGFDMExec(0,0)
-        self.set_debug_level(debug_level)
-        if root_dir is None:
-            self.set_root_dir(self.find_root_dir())
-        else:
-            self.set_root_dir(root_dir)
 
     def simulate(self, record_properties=[], t_final=1, dt=1.0/120, verbose=False):
         y = {}
@@ -112,6 +107,7 @@ cdef class FGFDMExec:
             search_paths.append("/opt/local/share/JSBSim/")
 
         for path in search_paths:
+            print 'searching for JSBSim in path: ', path
             if path is not  None and os.path.isdir(path):
                 root_dir = path
                 break
@@ -235,9 +231,9 @@ cdef class FGFDMExec:
         self.thisptr.SetRootDir(path)
 
         # this is a hack to fix a bug in JSBSim
-        self.set_engine_path(self.get_engine_path())
-        self.set_aircraft_path(self.get_aircraft_path())
-        self.set_systems_path(self.get_systems_path())
+        self.set_engine_path("engine")
+        self.set_aircraft_path("aircraft")
+        self.set_systems_path("systems")
 
     def get_engine_path(self):
         """
