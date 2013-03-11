@@ -3,7 +3,7 @@ import unittest
 import os
 from pyjsbsim import FGFDMExec
 
-class TestFGFDMExec(unittest.TestCase):
+class TestCython(unittest.TestCase):
     
     def setup(self):
         pass
@@ -32,11 +32,14 @@ class TestFGFDMExec(unittest.TestCase):
 
     def test_load_model(self):
         fdm = FGFDMExec()
-        fdm.find_root_dir()
-        fdm.set_aircraft_path("aircraft")
         model = "f16"
         fdm.load_model(model)
         assert (model == fdm.get_model_name())
+
+    def test_simulate(self):
+        fdm = FGFDMExec()
+        fdm.load_model("f16")
+        fdm.simulate(verbose=True,dt=0.1,t_final=1)
 
 if __name__ == '__main__':
     unittest.main()

@@ -79,17 +79,27 @@ cdef class FGFDMExec:
         os.environ["JSBSIM_DEBUG"]=str(0)
         self.thisptr = new c_FGFDMExec(0,0)
 
+    def __init__(self, root_dir=None):
+        if root_dir is None:
+            self.find_root_dir()
+        else:
+            if not os.path.isdir(root_dir):
+                raise IOError("Can't find root directory: {0}".format(root_dir))
+
     def simulate(self, record_properties=[], t_final=1, dt=1.0/120, verbose=False):
         y = {}
         t = []
+        self.set_dt(dt)
+        self.run_ic()
         for prop in record_properties:
             y[prop] = []
-        self.set_dt(dt)
         while self.get_sim_time() < t_final:
-            self.run()
+            if (self.run() == False):
+                break
             if verbose:
                 print 't:', self.get_sim_time()
             t.append(self.get_sim_time())
+            print 'dt: ', self.get_delta_t()
             for prop in record_properties:
                 y[prop].append(self.get_property_value(prop))
         return (t,y)

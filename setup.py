@@ -3,7 +3,7 @@ from distutils.core import setup
 from distutils.extension import Extension
 import os
 
-version = '0.5.3'
+version = '0.5.5'
 
 try:
     from Cython.Distutils import build_ext
