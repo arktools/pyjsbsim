@@ -53,9 +53,9 @@ class TrimPropertyProblem(object):
                 if i == 0:
                     entry = ""
                 else:
-                    entry = "[{}]".format(i)
-                catalog["propulsion/engine{}/fuel-flow-rate-pps".format(entry)]=\
-                    catalog_fuel["propulsion/engine{}/fuel-flow-rate-pps".format(entry)]
+                    entry = "[{0}]".format(i)
+                catalog["propulsion/engine{0}/fuel-flow-rate-pps".format(entry)]=\
+                    catalog_fuel["propulsion/engine{0}/fuel-flow-rate-pps".format(entry)]
             return True
         except:
             return False
@@ -119,15 +119,15 @@ class BadaData(object):
                 else:
                     entry = "[{}]".format(i)
                 cruise_fuelrate_low += pps2kgpm*\
-                    self.cruise[fl_str]["low"]["propulsion/engine{}/fuel-flow-rate-pps".format(entry)]
+                    self.cruise[fl_str]["low"]["propulsion/engine{0}/fuel-flow-rate-pps".format(entry)]
                 cruise_fuelrate_nom += pps2kgpm*\
-                    self.cruise[fl_str]["nom"]["propulsion/engine{}/fuel-flow-rate-pps".format(entry)]
+                    self.cruise[fl_str]["nom"]["propulsion/engine{0}/fuel-flow-rate-pps".format(entry)]
                 cruise_fuelrate_high += pps2kgpm*\
-                    self.cruise[fl_str]["high"]["propulsion/engine{}/fuel-flow-rate-pps".format(entry)]
+                    self.cruise[fl_str]["high"]["propulsion/engine{0}/fuel-flow-rate-pps".format(entry)]
                 climb_fuelrate_nom += pps2kgpm*\
-                    self.climb[fl_str]["nom"]["propulsion/engine{}/fuel-flow-rate-pps".format(entry)]
+                    self.climb[fl_str]["nom"]["propulsion/engine{0}/fuel-flow-rate-pps".format(entry)]
                 descent_fuelrate += pps2kgpm*\
-                    self.descent[fl_str]["propulsion/engine{}/fuel-flow-rate-pps".format(entry)]
+                    self.descent[fl_str]["propulsion/engine{0}/fuel-flow-rate-pps".format(entry)]
 
             # write a row in the table
             table += ptf_row_format.format(
@@ -216,7 +216,7 @@ class BadaData(object):
                 fdm.set_property_value("ic/h-agl-ft", alt)
 
                 print "=================================="
-                print "flight level: {}\n".format(fl)
+                print "flight level: {0}\n".format(fl)
                 print "=================================="
 
                 gammaProb = TrimPropertyProblem("ic/gamma-deg",fdm)
@@ -231,8 +231,8 @@ class BadaData(object):
                     if not gammaProb.solve():
                         raise RuntimeError("Cruise trim failed!")
                     cruise_catalog[mode] = fdm.get_property_catalog("/")
-                    print "\ncruise {} trim finished:\n" \
-                        "elapsed time\t: {} sec\n".format(mode,
+                    print "\ncruise {0} trim finished:\n" \
+                        "elapsed time\t: {1} sec\n".format(mode,
                         time.time()-start)
 
                 # max climb rate
@@ -243,8 +243,8 @@ class BadaData(object):
                     solver.solve(gammaProb,
                         prob_type="max", x_guess=0, x_min=0, x_max=50, tol=0.1)
                     climb_catalog[mode] = fdm.get_property_catalog("/")
-                    print "\nmax climb {} trim finished:\n" \
-                        "elapsed time\t: {} sec\ngamma\t: {}\n".format(
+                    print "\nmax climb {0} trim finished:\n" \
+                        "elapsed time\t: {1} sec\ngamma\t: {2}\n".format(
                             mode,
                             time.time()-start,
                             fdm.get_property_value("ic/gamma-deg"))
@@ -256,7 +256,7 @@ class BadaData(object):
                     prob_type="min", x_guess=0, x_min=-50, x_max=0, tol=0.1)
                 descent_catalog = fdm.get_property_catalog("/")
                 print "\nmax descent trim finished:\n" \
-                    "elapsed time\t: {} sec\ngamma\t: {}\n".format(
+                    "elapsed time\t: {0} sec\ngamma\t: {1}\n".format(
                     time.time()-start, fdm.get_property_value("ic/gamma-deg"))
 
                 # save data after each step

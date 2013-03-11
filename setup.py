@@ -1,9 +1,38 @@
 from setuptools import find_packages
 from distutils.core import setup
 from distutils.extension import Extension
-from Cython.Distutils import build_ext
+import os
 
-version = '0.5.1'
+version = '0.5.3'
+
+try:
+    from Cython.Distutils import build_ext
+except ImportError:
+    use_cython = False
+else:
+    use_cython = True
+
+cmdclass = {}
+ext_modules = [ ]
+pyjsbsim_srcs = []
+
+if use_cython:
+    pyjsbsim_srcs.append("cython/fgfdmexec.pyx")
+    cmdclass.update({'build_ext':build_ext})
+else:
+    pyjsbsim_srcs.append("cython/fgfdmexec.cpp")
+    for src in pyjsbsim_srcs:
+        if not os.path.isfile(src):
+            raise IOError("Must install Cython >= 0.18 to build from git")
+
+ext_modules += [ Extension('pyjsbsim.jsbsim_cython',
+    sources= pyjsbsim_srcs,
+    libraries=['JSBSim'],
+    include_dirs=[
+        '/usr/local/include/JSBSim'
+    ],
+    language='c++'),
+]
 
 setup(name='PyJSBSim',
       version=version,
@@ -28,19 +57,11 @@ setup(name='PyJSBSim',
       author_email='james.goppert@gmail.com',
       url='https://github.com/arktools/pyjsbsim',
       license='GPLv3',
-      packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
+      packages=find_packages(exclude=['pyjsbsim', 'examples', 'tests']),
       include_package_data=True,
-      install_requires=['Cython >= 0.18', 'numpy'],
-      ext_modules=[
-        Extension('pyjsbsim.jsbsim_cython',
-                  sources=[
-                      'cython/fgfdmexec.pyx'
-                  ],
-                  libraries=['JSBSim'],
-                  include_dirs=['/usr/local/include/JSBSim'],
-                  language='c++'),
-      ],
-      cmdclass = {'build_ext': build_ext},
+      install_requires=['numpy'],
+      ext_modules= ext_modules,
+      cmdclass = cmdclass,
       test_suite='test',
       #package_dir={'pyjsbsim': 'pyjsbsim'},
       #package_data={'pyjsbsim': ['templates/*']},

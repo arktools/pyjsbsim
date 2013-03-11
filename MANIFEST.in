@@ -1,4 +1,6 @@
 recursive-include examples *.py *.txt
 recursive-include scripts *.py
+recursive-include pyjsbsim/files *
+recursive-include cython *.pyx *.cpp
 include README.md
 include license.txt

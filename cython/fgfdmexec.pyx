@@ -125,10 +125,10 @@ cdef class FGFDMExec:
 
     def __repr__(self):
         return "FGFDMExec \n" \
-            "root dir\t:\t{}\n" \
-            "aircraft path\t:\t{}\n" \
-            "engine path\t:\t{}\n" \
-            "systems path\t:\t{}\n" \
+            "root dir\t:\t{0}\n" \
+            "aircraft path\t:\t{1}\n" \
+            "engine path\t:\t{2}\n" \
+            "systems path\t:\t{3}\n" \
                 .format(
                 self.get_root_dir(),
                 self.get_aircraft_path(),
