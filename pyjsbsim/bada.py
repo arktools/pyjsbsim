@@ -34,7 +34,7 @@ class TrimPropertyProblem(object):
         try:
             self.fdm.do_trim(0)
             #self.fdm.do_simplex_trim(0)
-            self.save_current_as_guess()
+            #self.save_current_as_guess()
             catalog = self.fdm.get_property_catalog("/")
 
             # XXX why do we need to flip the sign of gamma here?
@@ -56,6 +56,10 @@ class TrimPropertyProblem(object):
                     entry = "[{0}]".format(i)
                 catalog["propulsion/engine{0}/fuel-flow-rate-pps".format(entry)]=\
                     catalog_fuel["propulsion/engine{0}/fuel-flow-rate-pps".format(entry)]
+                print 'PPS:', catalog["propulsion/engine/fuel-flow-rate-pps"]
+                print 'num engines', num_engines
+                print 'throttle:', catalog["fcs/throttle-cmd-norm"]
+                print 'mixture:', catalog["fcs/mixture-cmd-norm"]
             return True
         except:
             return False
@@ -81,10 +85,10 @@ class BadaData(object):
                          "files", "bada_ptf.template")), "rb").read()
 
         # roaw format string
-        ptf_row_format = "{flight_level:3} |"\
-            "{cruise_tas:5d} {cruise_fuelrate_low:6.1f} {cruise_fuelrate_nom:6.1f} {cruise_fuelrate_high:6.1f} |"\
-            "{climb_tas:5d} {climb_roc_low:5d} {climb_roc_nom:5d} {climb_roc_high:5d} {climb_fuelrate_nom:7.1f} |"\
-            "{descent_tas:5d} {descent_rod:5d} {descent_fuelrate:7.1f}\n"\
+        ptf_row_format = "{flight_level:3g} |"\
+            "{cruise_tas:5d} {cruise_fuelrate_low:6.3g} {cruise_fuelrate_nom:6.3g} {cruise_fuelrate_high:6.3g} |"\
+            "{climb_tas:5g} {climb_roc_low:5g} {climb_roc_nom:5g} {climb_roc_high:5g} {climb_fuelrate_nom:7.3g} |"\
+            "{descent_tas:5g} {descent_rod:5g} {descent_fuelrate:7.3g}\n"\
             "    |                           |                                |                     \n"
 
         modes = ["low", "nom", "high"]
@@ -252,8 +256,10 @@ class BadaData(object):
                 # max descent rate
                 start = time.time()
                 fdm.setup_bada_trim("nom")
+                fdm.set_property_value("fcs/throttle-cmd-norm",0)
+                print 'throttle:', fdm.get_property_value("fcs/throttle-cmd-norm")
                 solver.solve(gammaProb,
-                    prob_type="min", x_guess=0, x_min=-50, x_max=0, tol=0.1)
+                    prob_type="min", x_guess=0, x_min=-10, x_max=0, tol=0.1)
                 descent_catalog = fdm.get_property_catalog("/")
                 print "\nmax descent trim finished:\n" \
                     "elapsed time\t: {0} sec\ngamma\t: {1}\n".format(

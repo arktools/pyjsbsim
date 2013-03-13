@@ -6,21 +6,27 @@ import pickle
 import os
 from pyjsbsim.bada import BadaData
 
-class Shadow(FGFDMExec):
+class ScanEagle(FGFDMExec):
 
     def __init__(self):
         self.find_root_dir([os.environ.get("UASNAS")])
-        self.set_debug_level(2)
+        self.set_debug_level(0)
         self.load_model("scaneagle")
+        print self.print_property_catalog()
         # turn on engine
         self.set_property_value("propulsion/starter_cmd", 1)
         self.set_property_value("propulsion/magneto_cmd", 3)
         self.set_property_value("fcs/mixture-cmd-norm", 1)
-        self.set_property_value("fcs/throttle-cmd-norm", 0.5)
         self.propulsion_init_running(0)
         
     def setup_bada_trim(self, mode):
-        self.set_property_value("ic/vc-kts", 5)
+
+        self.set_property_value("fcs/aileron-cmd-norm", 0.0)
+        self.set_property_value("fcs/elevator--cmd-norm", 0.0)
+        self.set_property_value("fcs/rudder-cmd-norm", 0.0)
+        self.set_property_value("fcs/throttle-cmd-norm", 0.5)
+
+        self.set_property_value("ic/vc-kts", 48)
         self.set_property_value("ic/lat-gc-deg", 0.0)
         self.set_property_value("ic/lon-gc-deg", 0.0)
         self.set_property_value("ic/lat-gc-deg", 47.0)
@@ -29,25 +35,28 @@ class Shadow(FGFDMExec):
         self.set_property_value("ic/theta-deg", 0.0)
         self.set_property_value("ic/psi-deg", 0.0)
         if mode == "low":
-            self.set_property_value("propulsion/tank[{}]/contents-lbs".format(i_tank), 1)
+            self.set_property_value("propulsion/tank[0]/contents-lbs", 0.1)
+            self.set_property_value("propulsion/tank[1]/contents-lbs", 0.1)
+            self.set_property_value("inertia/pointmass-weight-lbs", 0)
         elif mode == "nom":
-            for i_tank in range(3):
-                self.set_property_value("propulsion/tank[{}]/contents-lbs".format(i_tank), 2)
+            self.set_property_value("propulsion/tank[0]/contents-lbs", 0.87)
+            self.set_property_value("propulsion/tank[1]/contents-lbs", 0.87)
+            self.set_property_value("inertia/pointmass-weight-lbs", 6.26)
         elif mode == "high":
-            for i_tank in range(3):
-                self.set_property_value("propulsion/tank[{}]/contents-lbs".format(i_tank), 3)
+            self.set_property_value("propulsion/tank[0]/contents-lbs", 1.74)
+            self.set_property_value("propulsion/tank[1]/contents-lbs", 1.74)
+            self.set_property_value("inertia/pointmass-weight-lbs", 12.52)
         else:
             raise IOError("unknown mode")
         for item in ["ic/h-agl-ft","ic/vc-kts","ic/vt-kts"]:
             print "{}\t: {}".format(item, self.get_property_value(item))
 
-file_name = "save.bada_data_shadow-" + time.strftime("%m_%d_%y__%H_%M")
+file_name = "save.bada_data_scaneagle-" + time.strftime("%m_%d_%y__%H_%M")
 bada_data = BadaData.from_fdm(
-    fdm=Shadow(),
+    fdm=ScanEagle(),
     flight_levels = np.array([
         0, 5, 10, 15, 20, 30, 40, 60, 80, 100,
-        120, 140, 160, 180, 200, 220, 240, 260,
-        280, 290, 310, 330, 350, 370]),
+        120, 140, 160, 180, 200]),
     file_name=file_name,
     verbose=True)
 bada_data_loaded = pickle.load(open(file_name,"rb"))
