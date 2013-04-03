@@ -3,7 +3,7 @@ from distutils.core import setup
 from distutils.extension import Extension
 import os
 
-version = '0.5.5'
+version = '0.5.6'
 
 try:
     from Cython.Distutils import build_ext
@@ -57,13 +57,12 @@ setup(name='PyJSBSim',
       author_email='james.goppert@gmail.com',
       url='https://github.com/arktools/pyjsbsim',
       license='GPLv3',
-      packages=find_packages(exclude=['pyjsbsim', 'examples', 'tests']),
+      packages=find_packages(exclude=['examples', 'tests']),
       include_package_data=True,
       install_requires=['numpy'],
       ext_modules= ext_modules,
       cmdclass = cmdclass,
       test_suite='test',
-      #package_dir={'pyjsbsim': 'pyjsbsim'},
       #package_data={'pyjsbsim': ['templates/*']},
       #entry_points={
       #  'console_scripts': [
